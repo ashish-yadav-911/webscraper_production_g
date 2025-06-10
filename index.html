@@ -16,38 +16,66 @@
         button { width: 100%; padding: 0.8rem; border: none; border-radius: 4px; background-color: var(--primary-color); color: white; font-size: 1rem; font-weight: 600; cursor: pointer; transition: background-color 0.2s; }
         button:hover { background-color: var(--primary-hover); }
         button.secondary { background: none; border: 1px solid var(--primary-color); color: var(--primary-color); }
-        button.secondary:hover { background-color: rgba(0, 123, 255, 0.1); }
         .hidden { display: none; }
         #app-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
-        #app-header #user-email { font-weight: 600; }
-        #app-header button { width: auto; padding: 0.5rem 1rem; }
-        #output-area { background-color: var(--output-bg); border: 1px solid var(--border-color); border-radius: 8px; padding: 1.5rem; min-height: 100px; white-space: pre-wrap; word-wrap: break-word; font-family: "Courier New", Courier, monospace; font-size: 0.9rem; transition: all 0.3s; }
-        #output-area.error { color: var(--error-color); border-color: var(--error-color); }
-        #output-area.success { color: var(--success-color); border-color: var(--success-color); }
+        #output-area { background-color: var(--card-background); border: 1px solid var(--border-color); border-radius: 8px; padding: 1.5rem; min-height: 100px; font-size: 0.9rem; transition: all 0.3s; }
+        .product-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; }
+        .product-card { border: 1px solid var(--border-color); border-radius: 4px; padding: 1rem; text-align: center; display: flex; flex-direction: column; justify-content: space-between;}
+        .product-card img { max-width: 100%; height: 150px; object-fit: cover; border-radius: 4px; margin-bottom: 0.5rem; }
+        .product-card h4 { margin: 0.5rem 0; font-size: 1rem; word-wrap: break-word; }
+        .product-card p { margin: 0; font-size: 0.9rem; color: var(--success-color); font-weight: bold; }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Production Scraper</h1>
+
+        <!-- AUTHENTICATION SECTION - NOW COMPLETE -->
         <div id="auth-section">
             <div class="card">
-                <h2>Register</h2><form id="register-form"><div class="form-group"><label for="register-email">Email</label><input type="email" id="register-email" required></div><div class="form-group"><label for="register-password">Password</label><input type="password" id="register-password" required></div><button type="submit">Register</button></form>
+                <h2>Register</h2>
+                <form id="register-form">
+                    <div class="form-group"><label for="register-email">Email</label><input type="email" id="register-email" required></div>
+                    <div class="form-group"><label for="register-password">Password</label><input type="password" id="register-password" required></div>
+                    <button type="submit">Register</button>
+                </form>
             </div>
             <div class="card">
-                <h2>Login</h2><form id="login-form"><div class="form-group"><label for="login-email">Email</label><input type="email" id="login-email" required></div><div class="form-group"><label for="login-password">Password</label><input type="password" id="login-password" required></div><button type="submit">Login</button></form>
+                <h2>Login</h2>
+                <form id="login-form">
+                    <div class="form-group"><label for="login-email">Email</label><input type="email" id="login-email" required></div>
+                    <div class="form-group"><label for="login-password">Password</label><input type="password" id="login-password" required></div>
+                    <button type="submit">Login</button>
+                </form>
             </div>
         </div>
+
+        <!-- MAIN APPLICATION SECTION - NOW COMPLETE -->
         <div id="app-section" class="hidden">
-            <div id="app-header"><span id="welcome-message">Welcome, <span id="user-email"></span>!</span><button id="logout-button" class="secondary">Logout</button></div>
-            <div class="card">
-                <h2>1. Scrape a Website</h2><form id="scrape-form"><div class="form-group"><label for="scrape-url">URL to Scrape</label><input type="url" id="scrape-url" placeholder="http://books.toscrape.com/" required></div><button type="submit">Start Scraping Job</button></form>
+            <div id="app-header">
+                <span id="welcome-message">Welcome, <span id="user-email"></span>!</span>
+                <button id="logout-button" class="secondary">Logout</button>
             </div>
             <div class="card">
-                <h2>2. Ask a Question About Scraped Data</h2><form id="query-form"><div class="form-group"><label for="query-question">Your Question</label><input type="text" id="query-question" placeholder="Which book is the cheapest?" required></div><button type="submit">Ask AI</button></form>
+                <h2>1. Scrape a Website</h2>
+                <form id="scrape-form">
+                    <div class="form-group"><label for="scrape-url">URL to Scrape</label><input type="url" id="scrape-url" placeholder="http://books.toscrape.com/" required></div>
+                    <button type="submit">Start Scraping Job</button>
+                </form>
+            </div>
+            <div class="card">
+                <h2>2. Ask a Question About Scraped Data</h2>
+                <form id="query-form">
+                    <div class="form-group"><label for="query-question">Your Question</label><input type="text" id="query-question" placeholder="Which book is the cheapest?" required></div>
+                    <button type="submit">Ask AI</button>
+                </form>
             </div>
         </div>
+
         <div class="card">
-            <h2>Status & Results</h2><button id="view-data-button" class="secondary" style="width: auto; margin-bottom: 1rem;">View Scraped Data</button><pre id="output-area">Welcome! Please register or log in to begin.</pre>
+            <h2>Status & Results</h2>
+            <button id="view-data-button" class="secondary" style="width: auto; margin-bottom: 1rem;">View Scraped Data</button>
+            <div id="output-area"><p>Welcome! Please register or log in to begin.</p></div>
         </div>
     </div>
     <script>
@@ -55,22 +83,14 @@
             const API_BASE_URL = "http://127.0.0.1:8000/api/v1"; let accessToken = null;
             const authSection = document.getElementById('auth-section'); const appSection = document.getElementById('app-section'); const userEmailSpan = document.getElementById('user-email'); const outputArea = document.getElementById('output-area');
             const registerForm = document.getElementById('register-form'); const loginForm = document.getElementById('login-form'); const scrapeForm = document.getElementById('scrape-form'); const queryForm = document.getElementById('query-form'); const logoutButton = document.getElementById('logout-button'); const viewDataButton = document.getElementById('view-data-button');
-            function logToOutput(message, isError = false, isSuccess = false) { if (typeof message === 'object') message = JSON.stringify(message, null, 2); outputArea.textContent = message; outputArea.classList.remove('error', 'success'); if (isError) outputArea.classList.add('error'); if (isSuccess) outputArea.classList.add('success'); }
+            function logToOutput(message, isError = false, isSuccess = false) { if (typeof message === 'object') { outputArea.innerHTML = `<pre>${JSON.stringify(message, null, 2)}</pre>`; } else { outputArea.innerHTML = `<p>${message}</p>`; } outputArea.className = ''; if (isError) outputArea.classList.add('error'); if (isSuccess) outputArea.classList.add('success'); }
             function updateUI() { if (accessToken) { authSection.classList.add('hidden'); appSection.classList.remove('hidden'); } else { authSection.classList.remove('hidden'); appSection.classList.add('hidden'); } }
             async function handleRegister(event) { event.preventDefault(); const [email, password] = [document.getElementById('register-email').value, document.getElementById('register-password').value]; try { const response = await fetch(`${API_BASE_URL}/users/register`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email, password }) }); const data = await response.json(); if (!response.ok) throw new Error(data.detail || 'Registration failed'); logToOutput(`User ${data.email} registered successfully! Please log in.`, false, true); registerForm.reset(); } catch (error) { logToOutput(`Registration Error: ${error.message}`, true); } }
             async function handleLogin(event) { event.preventDefault(); const [email, password] = [document.getElementById('login-email').value, document.getElementById('login-password').value]; const formData = new FormData(); formData.append('username', email); formData.append('password', password); try { const response = await fetch(`${API_BASE_URL}/users/login`, { method: 'POST', body: formData }); const data = await response.json(); if (!response.ok) throw new Error(data.detail || 'Login failed'); accessToken = data.access_token; userEmailSpan.textContent = email; logToOutput('Login successful! You can now scrape and query data.', false, true); updateUI(); } catch (error) { logToOutput(`Login Error: ${error.message}`, true); } }
             function handleLogout() { accessToken = null; logToOutput('You have been logged out.'); updateUI(); }
             async function handleScrape(event) { event.preventDefault(); const url = document.getElementById('scrape-url').value; if (!accessToken) { logToOutput('Error: You must be logged in to scrape.', true); return; } logToOutput(`Sending scrape request for ${url}...`); try { const response = await fetch(`${API_BASE_URL}/scraping/scrape`, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${accessToken}` }, body: JSON.stringify({ url: url }) }); const data = await response.json(); if (!response.ok) throw new Error(data.detail || 'Scraping request failed'); logToOutput(`Scraping job started successfully!\nTask ID: ${data.task_id}\n\nCheck your Celery worker terminal for progress.`, false, true); scrapeForm.reset(); } catch(error) { logToOutput(`Scraping Error: ${error.message}`, true); } }
-            async function handleQuery(event) {
-                event.preventDefault(); const question = document.getElementById('query-question').value; if (!accessToken) { logToOutput('Error: You must be logged in to query.', true); return; } logToOutput(`Asking the AI: "${question}"...`);
-                try {
-                    // --- THIS IS THE CORRECTED LINE ---
-                    const response = await fetch(`${API_BASE_URL}/query/query`, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${accessToken}` }, body: JSON.stringify({ question: question }) });
-                    const data = await response.json(); if (!response.ok) throw new Error(data.detail || 'Query request failed');
-                    const formattedAnswer = `Question: ${data.question}\n\nAnswer:\n${data.answer}`; logToOutput(formattedAnswer, false, true);
-                } catch(error) { logToOutput(`Query Error: ${error.message}`, true); }
-            }
-            async function handleGetAllItems() { if (!accessToken) { logToOutput('Error: You must be logged in to view data.', true); return; } logToOutput('Fetching scraped data from the database...'); try { const response = await fetch(`${API_BASE_URL}/query/all-items`, { method: 'GET', headers: { 'Authorization': `Bearer ${accessToken}` } }); const data = await response.json(); if (!response.ok) throw new Error(data.detail || 'Failed to fetch items'); if (data.length === 0) { logToOutput('No data found. Please scrape a website first.', false, false); } else { logToOutput(`Found ${data.length} items:\n\n` + JSON.stringify(data, null, 2), false, true); } } catch (error) { logToOutput(`Error fetching data: ${error.message}`, true); } }
+            async function handleQuery(event) { event.preventDefault(); const question = document.getElementById('query-question').value; if (!accessToken) { logToOutput('Error: You must be logged in to query.', true); return; } logToOutput(`Asking the AI: "${question}"...`); try { const response = await fetch(`${API_BASE_URL}/query/query`, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${accessToken}` }, body: JSON.stringify({ question: question }) }); const data = await response.json(); if (!response.ok) throw new Error(data.detail || 'Query request failed'); logToOutput(`<b>Question:</b> ${data.question}<br><br><b>Answer:</b><br>${data.answer}`); } catch(error) { logToOutput(`Query Error: ${error.message}`, true); } }
+            async function handleGetAllItems() { if (!accessToken) { logToOutput('Error: You must be logged in to view data.', true); return; } outputArea.innerHTML = '<p>Fetching scraped data...</p>'; try { const response = await fetch(`${API_BASE_URL}/query/all-items`, { method: 'GET', headers: { 'Authorization': `Bearer ${accessToken}` } }); const data = await response.json(); if (!response.ok) throw new Error(data.detail || 'Failed to fetch items'); if (data.length === 0) { outputArea.innerHTML = '<p>No data found. Please scrape a website first.</p>'; } else { outputArea.innerHTML = `<p>Found ${data.length} items:</p><div class="product-list"></div>`; const productList = outputArea.querySelector('.product-list'); data.forEach(item => { const card = document.createElement('div'); card.className = 'product-card'; const price = item.price ? `$${item.price.toFixed(2)}` : 'N/A'; const image = item.image_url ? `<img src="${item.image_url}" alt="${item.title}">` : ''; card.innerHTML = `${image}<h4><a href="${item.url}" target="_blank">${item.title}</a></h4><p>${price}</p>`; productList.appendChild(card); }); } } catch (error) { outputArea.innerHTML = `<p class="error">Error fetching data: ${error.message}</p>`; } }
             registerForm.addEventListener('submit', handleRegister); loginForm.addEventListener('submit', handleLogin); logoutButton.addEventListener('click', handleLogout); scrapeForm.addEventListener('submit', handleScrape); queryForm.addEventListener('submit', handleQuery); viewDataButton.addEventListener('click', handleGetAllItems);
             updateUI();
         });

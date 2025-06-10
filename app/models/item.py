@@ -9,6 +9,8 @@ class ScrapedItem(Base):
     title = Column(String, index=True)
     price = Column(Float)
     description = Column(String)
-    owner_id = Column(Integer, ForeignKey("users.id"))
+    # --- ADD THIS LINE ---
+    image_url = Column(String, nullable=True)
 
+    owner_id = Column(Integer, ForeignKey("users.id"))
     owner = relationship("User")
