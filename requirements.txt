@@ -1,0 +1,17 @@
+fastapi
+uvicorn[standard]
+sqlalchemy[asyncio]
+aiosqlite
+pydantic
+pydantic-settings
+celery
+redis
+httpx
+beautifulsoup4
+openai
+scikit-learn
+joblib
+python-jose[cryptography]
+passlib[bcrypt]
+python-multipart # For FastAPI forms
+email-validator
