@@ -1,0 +1,19 @@
+.env
+venv
+
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.pdb
+*.egg   
+*.egg-info
+dist/
+build/
+*.log
+
+scraper.db
+neighbors_model.joblib
+vectors.joblib
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints
