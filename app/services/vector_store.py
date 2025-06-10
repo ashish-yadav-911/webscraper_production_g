@@ -53,22 +53,17 @@ def add_item_to_vector_store(item_id: int, text: str):
     
     print(f"Added item {item_id} and retrained vector store. Total items: {len(ids)}")
 
-# def query_vector_store(query_text: str, n_results: int = 5) -> Tuple[list, list]:
-#     """Queries the vector store for similar items."""
-#     if model is None or not vectors:
-#         return [], []
-        
-#     query_vector = np.array(get_embedding(query_text)).reshape(1, -1)
-    
-#     distances, indices = model.kneighbors(query_vector)
-    
-#     found_ids = [ids[i] for i in indices[0]]
-    
-#     return distances[0].tolist(), found_ids
-
-# load_vector_store()
-
-# In app/services/vector_store.py
+def clear_vector_store():
+    """Deletes the vector store files to start fresh."""
+    global model, vectors, ids
+    try:
+        if os.path.exists(NEIGHBORS_FILE): os.remove(NEIGHBORS_FILE)
+        if os.path.exists(VECTORS_FILE): os.remove(VECTORS_FILE)
+        if os.path.exists(IDS_FILE): os.remove(IDS_FILE)
+        model, vectors, ids = None, [], []
+        print("Cleared existing vector store.")
+    except Exception as e:
+        print(f"Error clearing vector store: {e}")
 
 def query_vector_store(query_text: str, n_results: int = 5) -> Tuple[list, list]:
     """Queries the vector store for similar items."""
